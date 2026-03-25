@@ -1,0 +1,166 @@
+/* 基础重置与暗色赌场风格 */
+body {
+  background-color: #1a202c;
+  color: #edf2f7;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 40px;
+  margin: 0;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.score-board {
+  font-size: 24px;
+  font-weight: bold;
+  color: #48bb78; /* 绿色系分数 */
+}
+
+/* 6x6 网格布局 (5张牌 + 1个提示槽) */
+#game-board {
+  display: grid;
+  grid-template-columns: repeat(5, 80px) 100px;
+  grid-template-rows: repeat(5, 80px) 60px;
+  gap: 10px;
+}
+
+/* 提示区样式 */
+.hint {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: #a0aec0;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+}
+
+/* ==================== 卡牌核心与 3D 翻转 ==================== */
+.card {
+  width: 100%;
+  height: 100%;
+  perspective: 1000px; /* 3D 空间透视距离 */
+  cursor: pointer;
+}
+
+/* 悬停高亮提示可点击 */
+.card:hover .card-inner {
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+.card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+  transform-style: preserve-3d; /* 保持 3D 结构 */
+  border-radius: 8px;
+}
+
+/* JS 给最外层加上 .is-flipped 后，触发 Y 轴翻转 */
+.card.is-flipped .card-inner {
+  transform: rotateY(180deg);
+}
+
+.card-front,
+.card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden; /* 翻过去后隐藏背面 */
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+/* 牌背：未翻开的样式 */
+.card-front {
+  background: linear-gradient(135deg, #2d3748, #4a5568);
+  border: 2px solid #718096;
+}
+
+/* 牌面：翻开后的基础样式，默认转过去 180 度准备好 */
+.card-back {
+  transform: rotateY(180deg);
+  background-color: #cbd5e0;
+  color: #1a202c;
+}
+
+/* ==================== 卡牌数值状态 (提供给 JS 的 Class) ==================== */
+
+/* 炸弹 (游戏结束) */
+.card.val-0 .card-back {
+  background-color: #e53e3e; /* 红色 */
+  color: white;
+  box-shadow: 0 0 20px rgba(229, 62, 62, 0.6);
+}
+
+/* 普通 1 分牌 */
+.card.val-1 .card-back {
+  background-color: #e2e8f0;
+}
+
+/* 2 分牌 */
+.card.val-2 .card-back {
+  background-color: #faf089; /* 浅金 */
+  color: #744210;
+}
+
+/* 3 分牌 */
+.card.val-3 .card-back {
+  background-color: #ecc94b; /* 深金 */
+  color: #744210;
+  box-shadow: 0 0 15px rgba(236, 201, 75, 0.5);
+}
+
+/* ==================== 游戏结束弹窗 ==================== */
+#game-over-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex; /* JS 把它从 none 改成 flex 即可显示 */
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.modal-content {
+  background-color: #2d3748;
+  padding: 40px;
+  border-radius: 12px;
+  text-align: center;
+  border: 1px solid #4a5568;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  color: #fc8181;
+}
+
+#btn-restart {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #4299e1;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+#btn-restart:hover {
+  background-color: #3182ce;
+}
